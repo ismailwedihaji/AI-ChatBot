@@ -160,8 +160,8 @@ export default function Home() {
   const themeStyles = getThemeStyles()
 
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-start sm:justify-center p-0 sm:p-4 md:p-6 transition-colors duration-300 ${themeStyles.main}`}>
-      <div className={`w-full max-w-5xl h-screen sm:h-[95vh] md:h-[90vh] flex flex-col ${themeStyles.container} rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl overflow-hidden border-0 sm:border border-gray-200/50 dark:border-gray-700/50 transition-colors duration-300`}>
+    <main className={`flex h-screen flex-col items-center justify-start sm:justify-center p-0 sm:p-4 md:p-6 transition-colors duration-300 ${themeStyles.main}`}>
+      <div className={`w-full max-w-5xl h-full sm:h-[95vh] md:h-[90vh] flex flex-col ${themeStyles.container} rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl overflow-hidden border-0 sm:border border-gray-200/50 dark:border-gray-700/50 transition-colors duration-300`}>
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white p-3 sm:p-5 md:p-6 flex justify-between items-center shadow-lg flex-shrink-0">
           <div className="flex items-center gap-2 sm:gap-3">

@@ -12,6 +12,14 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  height: 100%;
+}
+
+/* Fix for mobile viewport height - accounts for browser address bar */
+@supports (-webkit-touch-callout: none) {
+  body {
+    min-height: -webkit-fill-available;
+  }
 }
 
 body {
@@ -41,6 +49,14 @@ body {
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+  
+  /* Mobile-specific full height fix */
+  @media (max-width: 640px) {
+    .mobile-full-height {
+      height: 100dvh; /* Dynamic viewport height */
+      height: 100vh;
     }
   }
 }
