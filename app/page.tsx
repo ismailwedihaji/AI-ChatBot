@@ -160,24 +160,24 @@ export default function Home() {
   const themeStyles = getThemeStyles()
 
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-center p-2 sm:p-4 md:p-6 transition-colors duration-300 ${themeStyles.main}`}>
-      <div className={`w-full max-w-5xl h-[100vh] sm:h-[95vh] md:h-[90vh] flex flex-col ${themeStyles.container} rounded-none sm:rounded-2xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transition-colors duration-300`}>
+    <main className={`flex min-h-screen flex-col items-center justify-start sm:justify-center p-0 sm:p-4 md:p-6 transition-colors duration-300 ${themeStyles.main}`}>
+      <div className={`w-full max-w-5xl h-screen sm:h-[95vh] md:h-[90vh] flex flex-col ${themeStyles.container} rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl overflow-hidden border-0 sm:border border-gray-200/50 dark:border-gray-700/50 transition-colors duration-300`}>
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white p-4 sm:p-5 md:p-6 flex justify-between items-center shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <span className="text-2xl sm:text-3xl">🤖</span>
+        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white p-3 sm:p-5 md:p-6 flex justify-between items-center shadow-lg flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-9 h-9 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <span className="text-xl sm:text-3xl">🤖</span>
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">AI Chatbot</h1>
-              <p className="text-xs sm:text-sm text-blue-100 mt-0.5">Powered by Groq AI ⚡</p>
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold">AI Chatbot</h1>
+              <p className="text-[10px] sm:text-sm text-blue-100 mt-0.5">Powered by Groq AI ⚡</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 sm:p-2.5 bg-white/20 hover:bg-white/30 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 group"
+              className="p-1.5 sm:p-2.5 bg-white/20 hover:bg-white/30 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 group"
               title="Change theme"
             >
               {theme === 'gradient' && (
@@ -200,7 +200,7 @@ export default function Home() {
             {messages.length > 0 && (
               <button
                 onClick={clearChat}
-                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium hover:scale-105 active:scale-95"
+                className="px-2 py-1.5 sm:px-4 sm:py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-all duration-200 text-[10px] sm:text-sm font-medium hover:scale-105 active:scale-95"
               >
                 <span className="hidden sm:inline">Clear Chat</span>
                 <span className="sm:hidden">Clear</span>
@@ -210,23 +210,23 @@ export default function Home() {
         </div>
 
         {/* Messages Container */}
-        <div className={`flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4 transition-colors duration-300 ${themeStyles.message}`}>
+        <div className={`flex-1 overflow-y-auto p-2 sm:p-4 md:p-6 space-y-2 sm:space-y-4 transition-colors duration-300 ${themeStyles.message}`}>
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center px-4">
               <div className="text-center text-gray-500 dark:text-gray-400 max-w-md">
-                <div className="text-5xl sm:text-6xl md:text-7xl mb-4 animate-bounce">💬</div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <div className="text-4xl sm:text-6xl md:text-7xl mb-3 sm:mb-4 animate-bounce">💬</div>
+                <h2 className="text-lg sm:text-2xl md:text-3xl font-semibold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Start a Conversation
                 </h2>
-                <p className="text-xs sm:text-sm md:text-base">Send a message to begin chatting with AI</p>
-                <div className="mt-6 flex flex-wrap gap-2 justify-center">
-                  <div className="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-full text-xs">
+                <p className="text-xs sm:text-sm md:text-base mb-4">Send a message to begin chatting with AI</p>
+                <div className="mt-4 sm:mt-6 flex flex-wrap gap-2 justify-center">
+                  <div className="px-2 py-1 sm:px-3 sm:py-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-full text-[10px] sm:text-xs">
                     💡 Ask anything
                   </div>
-                  <div className="px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-full text-xs">
+                  <div className="px-2 py-1 sm:px-3 sm:py-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-full text-[10px] sm:text-xs">
                     🚀 Fast responses
                   </div>
-                  <div className="px-3 py-1.5 bg-pink-100 dark:bg-pink-900/30 rounded-full text-xs">
+                  <div className="px-2 py-1 sm:px-3 sm:py-1.5 bg-pink-100 dark:bg-pink-900/30 rounded-full text-[10px] sm:text-xs">
                     🎨 Markdown support
                   </div>
                 </div>
@@ -253,7 +253,7 @@ export default function Home() {
         </div>
 
         {/* Input Area */}
-        <div className={`border-t border-gray-200 dark:border-gray-700 p-3 sm:p-4 md:p-5 transition-colors duration-300 ${themeStyles.input}`}>
+        <div className={`border-t border-gray-200 dark:border-gray-700 p-2 sm:p-4 md:p-5 transition-colors duration-300 flex-shrink-0 ${themeStyles.input}`}>
           <div className="flex space-x-2 sm:space-x-3">
             <textarea
               ref={textareaRef}
@@ -261,14 +261,14 @@ export default function Home() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."
-              className="flex-1 resize-none rounded-xl sm:rounded-2xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent max-h-32 transition-all duration-200"
+              className="flex-1 resize-none rounded-xl sm:rounded-2xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent max-h-24 sm:max-h-32 transition-all duration-200"
               rows={1}
               disabled={isLoading}
             />
             <button
               onClick={sendMessage}
               disabled={!input.trim() || isLoading}
-              className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl sm:rounded-2xl font-semibold hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center min-w-[60px] sm:min-w-[80px]"
+              className="px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl sm:rounded-2xl font-semibold hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center min-w-[50px] sm:min-w-[80px]"
             >
               {isLoading ? (
                 <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -276,16 +276,16 @@ export default function Home() {
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               ) : (
-                <span className="hidden sm:inline">Send</span>
-              )}
-              {!isLoading && (
-                <svg className="sm:hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
+                <>
+                  <span className="hidden sm:inline">Send</span>
+                  <svg className="sm:hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                </>
               )}
             </button>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center hidden sm:block">
+          <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1.5 sm:mt-2 text-center hidden sm:block">
             Press Enter to send • Shift+Enter for new line
           </p>
         </div>
