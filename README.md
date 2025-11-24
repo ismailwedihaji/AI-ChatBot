@@ -2,6 +2,10 @@
 
 A modern, full-stack AI chatbot built with **Next.js 14 (App Router)** and **Tailwind CSS**, powered by **Groq's lightning-fast AI API** using the **llama-3.1-8b-instant** model.
 
+## 🚀 Live Demo
+
+Try out the chatbot live at: [https://ai-chat-bot-eight-alpha.vercel.app/](https://ai-chat-bot-eight-alpha.vercel.app/)
+
 ## ✨ Features
 
 - 💬 **Real-time chat interface** with user and AI messages
