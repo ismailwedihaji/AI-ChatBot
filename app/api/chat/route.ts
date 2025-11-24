@@ -2,13 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { message } = await request.json()
+    const { messages } = await request.json()
 
-    if (!message || typeof message !== 'string') {
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
-        { error: 'Message is required and must be a string' },
+        { error: 'Messages array is required and must be non-empty' },
         { status: 400 }
       )
+    }
+
+    // Validate message structure
+    for (const msg of messages) {
+      if (!msg.role || !msg.content || typeof msg.content !== 'string' || !['user', 'assistant'].includes(msg.role)) {
+        return NextResponse.json(
+          { error: 'Invalid message structure. Each message must have role ("user" or "assistant") and content (string)' },
+          { status: 400 }
+        )
+      }
     }
 
     const apiKey = process.env.GROQ_API_KEY
@@ -29,12 +39,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant', // Fast and good model
-        messages: [
-          {
-            role: 'user',
-            content: message
-          }
-        ],
+        messages: messages,
         temperature: 0.7,
         max_tokens: 1024,
       }),

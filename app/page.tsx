@@ -71,12 +71,15 @@ export default function Home() {
     setIsLoading(true)
 
     try {
+      const currentMessages = [...messages, userMessage]
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: userMessage.content }),
+        body: JSON.stringify({ 
+          messages: currentMessages.map(m => ({ role: m.role, content: m.content }))
+        }),
       })
 
       if (!response.ok) {
@@ -169,7 +172,7 @@ export default function Home() {
               <span className="text-xl sm:text-3xl">🤖</span>
             </div>
             <div>
-              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold">AI Chatbot</h1>
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold">AI Chatbot (Hajawi_sheksawi)</h1>
               <p className="text-[10px] sm:text-sm text-blue-100 mt-0.5">Powered by Groq AI ⚡</p>
             </div>
           </div>
