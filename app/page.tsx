@@ -256,6 +256,9 @@ export default function Home() {
                     🎨 Markdown support
                   </div>
                 </div>
+                <p className="mt-4 sm:mt-6 text-[10px] sm:text-xs text-gray-600 dark:text-gray-300">
+                  This chatbot created by <span className="font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Ismail Mohammed</span> (<span className="font-bold text-transparent bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 bg-clip-text">Wedihaji</span>)
+                </p>
               </div>
             </div>
           ) : (
