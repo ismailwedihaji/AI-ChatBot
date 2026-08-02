@@ -480,6 +480,30 @@ export default function Home() {
     }
   }
 
+  const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const clipboardFiles = Array.from(event.clipboardData.files ?? [])
+    const pastedImageFiles = clipboardFiles.filter((file) => file.type.startsWith('image/'))
+
+    if (pastedImageFiles.length > 0) {
+      event.preventDefault()
+      void indexFiles(pastedImageFiles)
+      return
+    }
+
+    const clipboardText = event.clipboardData.getData('text/plain')
+    if (clipboardText.startsWith('data:image/')) {
+      event.preventDefault()
+      const imageName = `pasted-image-${Date.now()}.png`
+      fetch(clipboardText)
+        .then((response) => response.blob())
+        .then((blob) => indexFiles([new File([blob], imageName, { type: blob.type || 'image/png' })]))
+        .catch((error) => {
+          console.error('Failed to paste image from clipboard text:', error)
+          setRagNotice('Could not read the pasted screenshot')
+        })
+    }
+  }
+
   const getThemeStyles = () => {
     switch (theme) {
       case 'light':
@@ -706,6 +730,7 @@ export default function Home() {
                   adjustTextareaHeight()
                 }}
                 onKeyDown={handleKeyDown}
+                onPaste={handlePaste}
                 placeholder="Message AI Chatbot"
                 className="min-h-[40px] max-h-[200px] flex-1 resize-none overflow-y-auto bg-transparent px-1 py-2 text-sm leading-6 text-gray-900 placeholder-gray-500 focus:outline-none disabled:opacity-60 dark:text-gray-100 sm:text-base"
                 rows={1}
