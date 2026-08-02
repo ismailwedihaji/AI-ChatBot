@@ -6,6 +6,11 @@ type Message = {
   role: 'user' | 'assistant'
   content: string
   timestamp: Date
+  attachments?: Array<{
+    id: string
+    name: string
+    dataUrl: string
+  }>
 }
 
 type ChatMessageProps = {
@@ -38,7 +43,21 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           }`}
         >
           {isUser ? (
-            <p className="whitespace-pre-wrap break-words text-[13px] sm:text-base leading-relaxed">{message.content}</p>
+            <div className="space-y-2">
+              {message.attachments && message.attachments.length > 0 && (
+                <div className={`grid gap-2 ${message.attachments.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                  {message.attachments.map((attachment) => (
+                    <img
+                      key={attachment.id}
+                      src={attachment.dataUrl}
+                      alt={attachment.name}
+                      className="max-h-72 w-full rounded-lg bg-black/10 object-contain"
+                    />
+                  ))}
+                </div>
+              )}
+              <p className="whitespace-pre-wrap break-words text-[13px] sm:text-base leading-relaxed">{message.content}</p>
+            </div>
           ) : (
             <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-p:text-[13px] sm:prose-p:text-base prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-li:text-[13px] sm:prose-li:text-base prose-headings:mt-2 prose-headings:mb-1 prose-headings:text-sm sm:prose-headings:text-base prose-code:text-[11px] sm:prose-code:text-sm">
               <ReactMarkdown>{message.content}</ReactMarkdown>

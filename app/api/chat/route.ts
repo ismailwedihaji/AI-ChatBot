@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const MAX_VISION_IMAGES = 3
+const MAX_VISION_PAYLOAD_CHARACTERS = 3_800_000
+const IMAGE_DATA_URL_PATTERN = /^data:image\/(jpeg|png);base64,/i
+
 export async function POST(request: NextRequest) {
   try {
-    const { messages } = await request.json()
+    const { messages, context } = await request.json()
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
@@ -19,6 +23,42 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
       }
+
+      if (msg.images !== undefined) {
+        if (
+          !Array.isArray(msg.images) ||
+          msg.images.length > MAX_VISION_IMAGES ||
+          !msg.images.every((image: unknown) =>
+            typeof image === 'string' && IMAGE_DATA_URL_PATTERN.test(image)
+          )
+        ) {
+          return NextResponse.json(
+            { error: `Images must be JPEG or PNG data URLs, with at most ${MAX_VISION_IMAGES} images` },
+            { status: 400 }
+          )
+        }
+      }
+    }
+
+    const visionPayloadCharacters = messages.reduce(
+      (total, message) => total + (Array.isArray(message.images)
+        ? message.images.reduce((imageTotal: number, image: string) => imageTotal + image.length, 0)
+        : 0),
+      0
+    )
+
+    if (visionPayloadCharacters > MAX_VISION_PAYLOAD_CHARACTERS) {
+      return NextResponse.json(
+        { error: 'The attached images are too large. Try fewer or smaller images.' },
+        { status: 413 }
+      )
+    }
+
+    if (context && typeof context !== 'string') {
+      return NextResponse.json(
+        { error: 'Context must be a string when provided' },
+        { status: 400 }
+      )
     }
 
     const apiKey = process.env.GROQ_API_KEY
@@ -45,7 +85,7 @@ export async function POST(request: NextRequest) {
       pattern.test(lastMessage.content)
     )
 
-    if (isCreatorQuestion && lastMessage.role === 'user') {
+    if (isCreatorQuestion && lastMessage.role === 'user' && !lastMessage.images?.length) {
       // Get professional info from environment variables
       const creatorName = process.env.CREATOR_NAME || 'the developer'
       const creatorAlias = process.env.CREATOR_ALIAS || ''
@@ -99,6 +139,7 @@ export async function POST(request: NextRequest) {
     const creatorAlias = process.env.CREATOR_ALIAS || ''
     const systemMessageTemplate = process.env.CHATBOT_SYSTEM_MESSAGE || 'You are a helpful AI assistant.'
     const contextMessageTemplate = process.env.CHATBOT_CONTEXT_MESSAGE || ''
+    const ragContext = typeof context === 'string' ? context.trim() : ''
 
     // Add system message to provide context about the chatbot
     const systemMessage = {
@@ -108,15 +149,51 @@ export async function POST(request: NextRequest) {
         .replace(/{ALIAS}/g, creatorAlias)
         .replace(/\|/g, '\n\n')
     }
+
+    const ragContextMessage = ragContext
+      ? {
+          role: 'system',
+          content: `Use the retrieved document context below to answer the user's question. If the answer is not supported by the context, say that you do not have enough information.\n\nRetrieved document context:\n${ragContext}`,
+        }
+      : null
     
     // Add an initial assistant message to reinforce the context
-    const contextMessage = {
-      role: 'assistant',
-      content: contextMessageTemplate.replace(/{NAME}/g, creatorName)
-    }
+    const contextMessage = contextMessageTemplate
+      ? {
+          role: 'assistant',
+          content: contextMessageTemplate.replace(/{NAME}/g, creatorName),
+        }
+      : null
+
+    const hasVisionImages = messages.some(
+      (message) => Array.isArray(message.images) && message.images.length > 0
+    )
+    const conversationMessages = messages.map((message) => {
+      const images = Array.isArray(message.images) ? message.images : []
+
+      if (images.length === 0) {
+        return { role: message.role, content: message.content }
+      }
+
+      return {
+        role: message.role,
+        content: [
+          { type: 'text', text: message.content },
+          ...images.map((image: string) => ({
+            type: 'image_url',
+            image_url: { url: image },
+          })),
+        ],
+      }
+    })
 
     // Combine system message, context reinforcement, and user messages
-    const allMessages = [systemMessage, contextMessage, ...messages]
+    const allMessages = [
+      systemMessage,
+      ...(ragContextMessage ? [ragContextMessage] : []),
+      ...(contextMessage ? [contextMessage] : []),
+      ...conversationMessages,
+    ]
 
     // Send request to Groq API
     const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -126,10 +203,11 @@ export async function POST(request: NextRequest) {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant', // Fast and good model
+        model: hasVisionImages ? 'qwen/qwen3.6-27b' : 'llama-3.1-8b-instant',
         messages: allMessages,
         temperature: 0.7,
-        max_tokens: 1024,
+        max_completion_tokens: 1024,
+        ...(hasVisionImages ? { reasoning_effort: 'none' } : {}),
       }),
     })
 
