@@ -1,6 +1,6 @@
 # 🤖 AI Chatbot - Next.js + Groq API
 
-A modern, full-stack AI chatbot built with **Next.js 14 (App Router)** and **Tailwind CSS**, powered by **Groq's lightning-fast AI API** using the **llama-3.1-8b-instant** model.
+A modern, full-stack, multimodal AI chatbot built with **Next.js 14 (App Router)** and **Tailwind CSS**, powered by **Groq's lightning-fast AI API** using the **llama-3.1-8b-instant** model. The app also includes a lightweight **retrieval-augmented generation (RAG)** workflow for uploaded documents and images.
 
 ## 🚀 Live Demo
 
@@ -12,6 +12,8 @@ Try out the chatbot live at: [https://ai-chat-bot-eight-alpha.vercel.app/](https
 - 🎨 **Beautiful UI** with gradient backgrounds and smooth animations
 - 📱 **Responsive design** that works on mobile and desktop
 - 💾 **Persistent chat history** stored in localStorage
+- 📚 **Lightweight RAG-style retrieval** for uploaded PDFs, text files, and OCR-extracted images
+- 🖼️ **Multimodal support** with vision-ready image attachments
 - ⚡ **Lightning-fast responses** powered by Groq's optimized inference
 - 🌙 **Dark mode support** with system preference detection
 - ⌨️ **Keyboard shortcuts** (Enter to send, Shift+Enter for new line)
@@ -101,10 +103,14 @@ AI-ChatBot/
 │   ├── api/
 │   │   └── chat/
 │   │       └── route.ts          # Backend API route for Groq AI
+│   │   └── extract/
+│   │       └── route.ts          # OCR and text extraction route
 │   ├── components/
 │   │   ├── ChatMessage.tsx       # Individual message component
 │   │   └── LoadingDots.tsx       # Loading animation component
 │   ├── globals.css               # Global styles with Tailwind
+│   ├── lib/
+│   │   └── rag.ts                # Chunking and retrieval helpers
 │   ├── layout.tsx                # Root layout
 │   └── page.tsx                  # Main chat UI page
 ├── public/                       # Static assets
@@ -123,20 +129,32 @@ AI-ChatBot/
 ### Frontend (`app/page.tsx`)
 - Built with React functional components and hooks
 - Uses `useState` to manage chat messages and loading state
-- Sends POST requests to `/api/chat` with user messages
+- Extracts text from uploaded PDFs in the browser and OCR/text from other files through `/api/extract`
+- Builds a retrieval context from indexed documents with chunking and relevance ranking
+- Sends POST requests to `/api/chat` with user messages and retrieved context
 - Displays messages in a scrollable chat interface
 - Stores chat history in localStorage for persistence
 - Supports markdown rendering for AI responses
 
 ### Backend (`app/api/chat/route.ts`)
 - Next.js API Route Handler
-- Accepts POST requests with JSON body: `{ "message": "user input" }`
+- Accepts POST requests with chat messages plus optional retrieved context
 - Authenticates with Groq API using the API key from environment variables
 - Forwards requests to Groq API at `https://api.groq.com/openai/v1/chat/completions`
 - Uses the **llama-3.1-8b-instant** model for fast inference
 - Model configuration: temperature 0.7, max tokens 1024
 - Parses Groq response and returns: `{ "reply": "AI response" }`
 - Includes comprehensive error handling
+
+### Retrieval Layer (`app/lib/rag.ts`)
+- Chunks extracted document text into overlapping passages
+- Ranks chunks against the user query using token overlap
+- Builds a compact context block that is injected into the chat prompt
+
+### File Extraction (`app/api/extract/route.ts`)
+- OCR for image uploads using Tesseract.js
+- Plain text handling for `.txt`, `.md`, `.csv`, and `.json` files
+- Returns cleaned text for indexing and retrieval
 
 ### Styling
 - Tailwind CSS for modern, responsive design
@@ -148,10 +166,11 @@ AI-ChatBot/
 ## 🎯 Usage Example
 
 1. Open the app at http://localhost:3000
-2. Type a message like: **"Hello! Who are you?"** or **"Explain quantum computing"**
-3. Press **Enter** or click **Send**
-4. The AI will process your message and respond with markdown-formatted text
-5. Chat history is automatically saved in your browser
+3. Upload a PDF, image, or text file if you want document-grounded responses
+4. Type a message like: **"Summarize this document"** or **"What does the screenshot say?"**
+5. Press **Enter** or click **Send**
+6. The AI will process your message and respond with markdown-formatted text
+7. Chat history is automatically saved in your browser
 
 ## 🛠️ Available Scripts
 
@@ -212,6 +231,9 @@ Edit `tailwind.config.js` or update gradient classes in components.
 
 ### Add Streaming Responses
 Set `stream: true` in the Groq API request and implement streaming logic to display text word-by-word as it's generated.
+
+### Improve RAG
+If you want stronger retrieval quality, you can replace the current keyword-based ranking with embeddings and a vector database, then feed the top matches into the same chat prompt.
 
 ## � Cost & Limits
 
