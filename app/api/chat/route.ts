@@ -195,7 +195,13 @@ export async function POST(request: NextRequest) {
       ...conversationMessages,
     ]
 
-    // Send request to Groq API
+    // Use model names from the current Groq console instead of hardcoding
+    // a deprecated value. Keep them configurable via environment variables so
+    // the app can be updated without a code change.
+    const textModel = process.env.GROQ_TEXT_MODEL || 'openai/gpt-oss-20b'
+    const visionModel = process.env.GROQ_VISION_MODEL || 'qwen/qwen3.6-27b'
+    const model = hasVisionImages ? visionModel : textModel
+
     const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -203,7 +209,7 @@ export async function POST(request: NextRequest) {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: hasVisionImages ? 'qwen/qwen3.6-27b' : 'llama-3.1-8b-instant',
+        model,
         messages: allMessages,
         temperature: 0.7,
         max_completion_tokens: 1024,
@@ -215,9 +221,9 @@ export async function POST(request: NextRequest) {
       const errorText = await groqResponse.text()
       console.error('Groq API error:', errorText)
       return NextResponse.json(
-        { 
+        {
           error: `Groq API error: ${groqResponse.status} ${groqResponse.statusText}`,
-          details: errorText
+          details: errorText,
         },
         { status: 500 }
       )

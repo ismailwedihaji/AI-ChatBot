@@ -27,6 +27,8 @@ const CHAT_KNOWLEDGE_STORAGE_KEY = 'chatKnowledgeBase'
 const MAX_VISION_IMAGES = 3
 const MAX_VISION_IMAGE_BYTES = 2_500_000
 const MAX_VISION_PAYLOAD_CHARACTERS = 3_800_000
+const MODEL_PROVIDER = process.env.NEXT_PUBLIC_MODEL_PROVIDER || 'Groq AI'
+const MODEL_NAME = process.env.NEXT_PUBLIC_MODEL_NAME || 'openai/gpt-oss-20b'
 
 function readBlobAsDataUrl(blob: Blob) {
   return new Promise<string>((resolve, reject) => {
@@ -562,8 +564,10 @@ export default function Home() {
               <span className="text-xl sm:text-3xl">🤖</span>
             </div>
             <div>
-              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold">AI Chatbot (Hajawi_sheksawi)</h1>
-              <p className="text-[10px] sm:text-sm text-blue-100 mt-0.5">Powered by Groq AI ⚡</p>
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold">Ismail_AI</h1>
+              <p className="text-[10px] sm:text-sm text-blue-100 mt-0.5">
+                Powered by {MODEL_PROVIDER} {MODEL_NAME ? `• ${MODEL_NAME}` : 'AI'} ⚡
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2">

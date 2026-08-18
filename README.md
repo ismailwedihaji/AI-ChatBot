@@ -28,6 +28,21 @@ Before running this application, make sure you have:
 1. **Node.js** (v18 or higher) installed
 2. **A Groq API Key** (free tier available at [console.groq.com](https://console.groq.com))
 
+### Environment variables
+
+Add the following to your `.env.local` file:
+
+```env
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_TEXT_MODEL=openai/gpt-oss-20b
+GROQ_VISION_MODEL=qwen/qwen3.6-27b
+NEXT_PUBLIC_MODEL_PROVIDER=Groq AI
+NEXT_PUBLIC_MODEL_NAME=openai/gpt-oss-20b
+```
+
+- `GROQ_TEXT_MODEL` and `GROQ_VISION_MODEL` are used by the backend for chat and image requests.
+- `NEXT_PUBLIC_MODEL_PROVIDER` and `NEXT_PUBLIC_MODEL_NAME` are displayed in the UI header so the active model/provider is visible in the app.
+
 ### Getting a Groq API Key
 
 1. Visit [https://console.groq.com](https://console.groq.com)
@@ -141,10 +156,14 @@ AI-ChatBot/
 - Accepts POST requests with chat messages plus optional retrieved context
 - Authenticates with Groq API using the API key from environment variables
 - Forwards requests to Groq API at `https://api.groq.com/openai/v1/chat/completions`
-- Uses the **llama-3.1-8b-instant** model for fast inference
+- Uses model names configured in `GROQ_TEXT_MODEL` and `GROQ_VISION_MODEL`
 - Model configuration: temperature 0.7, max tokens 1024
 - Parses Groq response and returns: `{ "reply": "AI response" }`
 - Includes comprehensive error handling
+
+### UI model indicator
+- The app header reads `NEXT_PUBLIC_MODEL_PROVIDER` and `NEXT_PUBLIC_MODEL_NAME`
+- This lets the interface show the active provider/model name, such as `Groq AI • openai/gpt-oss-20b`
 
 ### Retrieval Layer (`app/lib/rag.ts`)
 - Chunks extracted document text into overlapping passages
